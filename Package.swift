@@ -1,10 +1,10 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 import PackageDescription
 
 let package = Package(
     name: "WinampMac",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v15)
     ],
     products: [
         .library(
@@ -15,9 +15,21 @@ let package = Package(
             name: "WinampUI",
             targets: ["WinampUI"]
         ),
+        .library(
+            name: "WinampRendering",
+            targets: ["WinampRendering"]
+        ),
+        .executable(
+            name: "WinampMacApp",
+            targets: ["WinampMacApp"]
+        ),
+        .executable(
+            name: "WinampSkinConversionCLI",
+            targets: ["WinampSkinConversionCLI"]
+        ),
     ],
     dependencies: [
-        // Add any external dependencies here
+        // No external dependencies - using only Apple frameworks for future-proofing
     ],
     targets: [
         .target(
@@ -26,17 +38,69 @@ let package = Package(
             path: "WinampMac/Core",
             resources: [
                 .process("Resources")
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .target(
+            name: "WinampRendering",
+            dependencies: ["WinampCore"],
+            path: "WinampMac/Rendering",
+            resources: [
+                .process("Shaders")
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .target(
             name: "WinampUI",
-            dependencies: ["WinampCore"],
-            path: "WinampMac/UI"
+            dependencies: ["WinampCore", "WinampRendering"],
+            path: "WinampMac/UI",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .executableTarget(
+            name: "WinampMacApp",
+            dependencies: ["WinampCore", "WinampUI", "WinampRendering"],
+            path: "WinampMac/App",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .testTarget(
             name: "WinampCoreTests",
             dependencies: ["WinampCore"],
-            path: "WinampMac/Tests"
+            path: "WinampMac/Tests/Core",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .testTarget(
+            name: "WinampRenderingTests",
+            dependencies: ["WinampRendering", "WinampCore"],
+            path: "WinampMac/Tests/Rendering",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .testTarget(
+            name: "WinampUITests",
+            dependencies: ["WinampUI", "WinampCore"],
+            path: "WinampMac/Tests/UI",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .executableTarget(
+            name: "WinampSkinConversionCLI",
+            dependencies: ["WinampCore", "WinampRendering"],
+            path: "Sources/WinampSkinConversionCLI",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
     ]
 )

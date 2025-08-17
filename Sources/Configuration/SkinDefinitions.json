@@ -1,0 +1,320 @@
+{
+  "skinFormat": "wsz",
+  "version": "1.0",
+  "metadata": {
+    "description": "Modern Winamp skin definition for macOS Metal rendering",
+    "targetOS": "macOS 15.0+",
+    "author": "Claude Code",
+    "compatibility": "Apple Silicon optimized"
+  },
+  "display": {
+    "retinaSupport": true,
+    "proMotionSupport": true,
+    "colorSpace": "displayP3",
+    "maxRefreshRate": 120,
+    "vsyncEnabled": true
+  },
+  "window": {
+    "baseSize": {
+      "width": 275,
+      "height": 116
+    },
+    "scalable": true,
+    "shape": "custom",
+    "transparency": true,
+    "shadow": {
+      "enabled": true,
+      "radius": 4,
+      "offset": {
+        "x": 0,
+        "y": -2
+      },
+      "opacity": 0.3
+    }
+  },
+  "sprites": {
+    "main": {
+      "file": "main.bmp",
+      "atlas": true,
+      "priority": "high",
+      "regions": {
+        "background": {
+          "bounds": [0, 0, 275, 116],
+          "scalable": false,
+          "hitTest": false
+        },
+        "titlebar": {
+          "bounds": [0, 0, 275, 14],
+          "scalable": true,
+          "hitTest": true,
+          "draggable": true
+        }
+      }
+    },
+    "buttons": {
+      "file": "cbuttons.bmp",
+      "atlas": true,
+      "priority": "high",
+      "regions": {
+        "previous": {
+          "normal": [0, 0, 23, 18],
+          "pressed": [0, 18, 23, 18],
+          "position": [16, 88],
+          "hitTest": true,
+          "animation": "buttonPress"
+        },
+        "play": {
+          "normal": [23, 0, 23, 18],
+          "pressed": [23, 18, 23, 18],
+          "position": [39, 88],
+          "hitTest": true,
+          "animation": "buttonPress"
+        },
+        "pause": {
+          "normal": [46, 0, 23, 18],
+          "pressed": [46, 18, 23, 18],
+          "position": [62, 88],
+          "hitTest": true,
+          "animation": "buttonPress"
+        },
+        "stop": {
+          "normal": [69, 0, 23, 18],
+          "pressed": [69, 18, 23, 18],
+          "position": [85, 88],
+          "hitTest": true,
+          "animation": "buttonPress"
+        },
+        "next": {
+          "normal": [92, 0, 23, 18],
+          "pressed": [92, 18, 23, 18],
+          "position": [108, 88],
+          "hitTest": true,
+          "animation": "buttonPress"
+        },
+        "eject": {
+          "normal": [115, 0, 23, 18],
+          "pressed": [115, 18, 23, 18],
+          "position": [136, 88],
+          "hitTest": true,
+          "animation": "buttonPress"
+        }
+      }
+    },
+    "volumeSlider": {
+      "file": "volume.bmp",
+      "atlas": true,
+      "priority": "medium",
+      "regions": {
+        "track": {
+          "bounds": [0, 0, 68, 13],
+          "position": [107, 57],
+          "hitTest": true,
+          "draggable": true
+        },
+        "thumb": {
+          "normal": [0, 15, 14, 11],
+          "pressed": [15, 15, 14, 11],
+          "position": [107, 58],
+          "hitTest": true,
+          "animation": "sliderMove"
+        }
+      }
+    },
+    "positionSlider": {
+      "file": "posbar.bmp",
+      "atlas": true,
+      "priority": "medium",
+      "regions": {
+        "track": {
+          "bounds": [0, 0, 248, 10],
+          "position": [16, 72],
+          "hitTest": true,
+          "draggable": true
+        },
+        "thumb": {
+          "normal": [248, 0, 29, 10],
+          "pressed": [278, 0, 29, 10],
+          "position": [16, 72],
+          "hitTest": true,
+          "animation": "sliderMove"
+        }
+      }
+    },
+    "visualization": {
+      "file": "monoster.bmp",
+      "atlas": false,
+      "priority": "low",
+      "regions": {
+        "spectrum": {
+          "bounds": [0, 0, 76, 16],
+          "position": [24, 43],
+          "animated": true,
+          "fps": 60,
+          "shader": "spectrum"
+        },
+        "oscilloscope": {
+          "bounds": [0, 15, 76, 16],
+          "position": [24, 43],
+          "animated": true,
+          "fps": 60,
+          "shader": "oscilloscope"
+        }
+      }
+    },
+    "text": {
+      "file": "text.bmp",
+      "atlas": true,
+      "priority": "low",
+      "regions": {
+        "songTitle": {
+          "bounds": [0, 0, 155, 6],
+          "position": [111, 27],
+          "scrollable": true,
+          "font": "sdf",
+          "color": "#00FF00"
+        },
+        "time": {
+          "bounds": [0, 6, 63, 13],
+          "position": [36, 26],
+          "font": "numbers",
+          "color": "#00FF00"
+        }
+      }
+    }
+  },
+  "animations": {
+    "buttonPress": {
+      "type": "state",
+      "duration": 0.1,
+      "easing": "easeInOut",
+      "properties": {
+        "scale": [1.0, 0.95, 1.0],
+        "opacity": [1.0, 0.8, 1.0]
+      }
+    },
+    "sliderMove": {
+      "type": "position",
+      "duration": 0.05,
+      "easing": "linear",
+      "dampening": 0.1
+    },
+    "textScroll": {
+      "type": "continuous",
+      "speed": 30,
+      "direction": "left",
+      "pauseAtEnd": 2.0
+    },
+    "spectrumBars": {
+      "type": "realtime",
+      "responsiveness": 0.9,
+      "decay": 0.05,
+      "peakHold": 1.0
+    }
+  },
+  "shaders": {
+    "spectrum": {
+      "vertex": "visualization_vertex",
+      "fragment": "visualization_fragment",
+      "uniforms": {
+        "barCount": 20,
+        "barWidth": 3,
+        "spacing": 1,
+        "colorGradient": [
+          {"position": 0.0, "color": "#00FF00"},
+          {"position": 0.5, "color": "#FFFF00"},
+          {"position": 1.0, "color": "#FF0000"}
+        ]
+      }
+    },
+    "oscilloscope": {
+      "vertex": "visualization_vertex",
+      "fragment": "visualization_fragment",
+      "uniforms": {
+        "lineWidth": 1.0,
+        "amplitude": 1.0,
+        "color": "#00FF00",
+        "glow": true
+      }
+    }
+  },
+  "colors": {
+    "primary": "#00FF00",
+    "secondary": "#FFFF00",
+    "accent": "#FF0000",
+    "background": "#000000",
+    "text": "#FFFFFF",
+    "textShadow": "#000000"
+  },
+  "fonts": {
+    "numbers": {
+      "file": "numbers.bmp",
+      "type": "bitmap",
+      "characterWidth": 9,
+      "characterHeight": 13,
+      "characters": "0123456789:-"
+    },
+    "sdf": {
+      "file": "font.sdf",
+      "type": "signedDistanceField",
+      "size": 16,
+      "threshold": 0.5,
+      "smoothing": 0.1
+    }
+  },
+  "audio": {
+    "visualization": {
+      "fftSize": 512,
+      "smoothing": 0.8,
+      "updateRate": 60,
+      "frequencyRange": [20, 20000]
+    },
+    "controls": {
+      "volumeSteps": 100,
+      "positionPrecision": 1000,
+      "seekSensitivity": 0.1
+    }
+  },
+  "performance": {
+    "textureAtlasSize": 2048,
+    "maxSpritesPerBatch": 1000,
+    "lodBias": 0.0,
+    "mipmapping": true,
+    "anisotropicFiltering": 4,
+    "vsync": true,
+    "targetFrameRate": {
+      "normal": 60,
+      "proMotion": 120,
+      "battery": 30
+    }
+  },
+  "platform": {
+    "macOS": {
+      "minVersion": "15.0",
+      "metalVersion": "3.0",
+      "architecture": ["arm64", "x86_64"],
+      "optimizations": {
+        "appleSilicon": true,
+        "metalPerformanceShaders": true,
+        "unifiedMemory": true
+      }
+    }
+  },
+  "accessibility": {
+    "voiceOver": true,
+    "highContrast": true,
+    "reducedMotion": true,
+    "colorBlindness": {
+      "deuteranopia": true,
+      "protanopia": true,
+      "tritanopia": true
+    }
+  },
+  "localization": {
+    "supportedLanguages": ["en", "es", "fr", "de", "ja", "zh"],
+    "rtlSupport": false,
+    "numberFormats": {
+      "time": "mm:ss",
+      "position": "percentage"
+    }
+  }
+}
