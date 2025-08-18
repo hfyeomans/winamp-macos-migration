@@ -45,7 +45,7 @@ if unzipProcess.terminationStatus == 0 {
     print("✅ Successfully extracted skin")
     
     // Find main.bmp
-    let extractedContents = try fileManager.contentsOfDirectory(atPath: tempDir)
+    let _ = try fileManager.contentsOfDirectory(atPath: tempDir)
     
     // Look for main.bmp in root or subdirectories
     func findMainBMP(in directory: String) -> String? {
