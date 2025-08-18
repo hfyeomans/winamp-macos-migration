@@ -1,6 +1,6 @@
-# Build Instructions for Winamp macOS Apps
+# Build Instructions for Winamp Skin Converter
 
-## Quick Start - Working Apps
+## ✅ CURRENT STATUS: ALL TOOLS WORKING
 
 ### 1. WinampLite (Minimal Working App) ✅
 
@@ -27,57 +27,79 @@ Test skin conversion without a full app:
 ```bash
 # Run the test script
 swift WinampSimpleTest/main.swift
-
-# Or make it executable
-chmod +x test_skin_conversion.swift
-./test_skin_conversion.swift
 ```
 
-## Building the Full Demo App
+### 3. Skin Converter CLI ✅
 
-Due to Swift 6 strict concurrency requirements, the full demo app requires some modifications. Here are the options:
-
-### Option A: Build with Swift 5 Mode (Recommended)
+Swift package-based converter:
 
 ```bash
-# Build with Swift 5 compatibility mode to bypass strict concurrency
-swift build -Xswiftc -swift-version -Xswiftc 5 --product WinampDemoApp
+# Build the package
+swift build
+
+# Test conversion
+swift run WinampSkinCLI test
+
+# Convert specific skin
+swift run WinampSkinCLI convert "Purple_Glow.wsz"
+
+# Batch convert all skins
+swift run WinampSkinCLI batch
 ```
 
-### Option B: Build Individual Components
+### 4. Standalone Converter Script ✅
+
+Direct script for quick conversion:
 
 ```bash
-# Build core components separately
-swift build --target WinampCore
-swift build --target WinampRendering
-swift build --target WinampUI
+# Make executable and run
+chmod +x simple_skin_converter.swift
+./simple_skin_converter.swift
 ```
 
-### Option C: Use Xcode
+## Advanced Components (Archived)
 
+The full demo app with Metal rendering and complex UI has been temporarily archived due to Swift 6 strict concurrency complexity.
+
+### Current State: ARCHIVED
+- Complex SwiftUI app: Moved to `/Archive/`
+- Metal rendering pipeline: Preserved for future
+- Advanced visualization: Documented but not built
+
+### To Access Archived Code
 ```bash
-# Open in Xcode (handles concurrency better)
-open Package.swift
-
-# Then in Xcode:
-# 1. Select WinampDemoApp scheme
-# 2. Product → Build (Cmd+B)
-# 3. Product → Run (Cmd+R)
+# View archived implementation
+git checkout archive/2025-08-17
+# Contains full complex implementation for future reference
 ```
+
+### Integration Path
+The working converters provide the foundation needed for integration:
+1. Use `WinampSkinConverter` to convert skins
+2. Extract `ConvertedSkin.originalImage` for your player
+3. Use `ConvertedSkin.convertedRegions` for button mapping
+4. Apply coordinate transformation for hit-testing
 
 ## Working Executables
 
-After successful compilation, you'll have these working apps:
+After successful compilation, you'll have these working tools:
 
-1. **winamp-lite** - Minimal but fully functional skin player
-   - Size: ~1MB
-   - Dependencies: None (uses system frameworks)
-   - Features: Skin loading, audio playback, basic controls
+1. **winamp-lite** - Minimal player demo (150 lines, single file)
+   - Size: ~200KB compiled
+   - Dependencies: AppKit, AVFoundation only  
+   - Features: Skin loading, audio playback, drag & drop
 
-2. **test_skin_conversion** - Command-line skin tester
-   - Tests .wsz extraction
-   - Verifies BMP loading
-   - Shows coordinate conversion
+2. **WinampSkinCLI** - Package-based converter
+   - Command: `swift run WinampSkinCLI`
+   - Features: Batch conversion, testing, individual files
+
+3. **simple_skin_converter.swift** - Standalone script  
+   - Direct execution: `./simple_skin_converter.swift`
+   - Features: Basic conversion with detailed output
+
+4. **WinampSimpleTest** - Analysis tool
+   - Command: `swift WinampSimpleTest/main.swift`
+   - Features: Extraction testing, coordinate validation
 
 ## Tested Skins
 
