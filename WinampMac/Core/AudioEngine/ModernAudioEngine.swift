@@ -112,6 +112,7 @@ public final class ModernAudioEngine: NSObject, ObservableObject {
     }
     
     private func setupAudioSession() {
+        #if canImport(AVFAudio) && !os(macOS)
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(.playback, mode: .default, options: [.allowBluetooth])
@@ -124,6 +125,8 @@ public final class ModernAudioEngine: NSObject, ObservableObject {
                 )
             }
         }
+        #endif
+        // macOS doesn't need AVAudioSession - AVAudioEngine handles this automatically
     }
     
     private func setupMediaRemoteCommands() {
