@@ -4,6 +4,7 @@ import Accelerate
 import CoreAudio
 import MediaPlayer
 import Combine
+import AppKit
 
 /// Modern audio engine for WinampMac using AVAudioEngine with 10-band EQ and FFT
 /// Optimized for Apple Silicon with hardware acceleration
@@ -211,7 +212,7 @@ public final class ModernAudioEngine: NSObject, ObservableObject {
     }
     
     // MARK: - FFT Analysis
-    private func performFFTAnalysis(_ buffer: AVAudioPCMBuffer) {
+    nonisolated private func performFFTAnalysis(_ buffer: AVAudioPCMBuffer) {
         guard let fftSetup = fftSetup,
               let channelData = buffer.floatChannelData else { return }
         
@@ -257,13 +258,12 @@ public final class ModernAudioEngine: NSObject, ObservableObject {
             magnitudes[i] = sqrt(realPart[i] * realPart[i] + imagPart[i] * imagPart[i])
         }
         
-        // Bin frequencies into 64 bands for visualization
-        let spectrumBands = binFrequenciesToBands(magnitudes)
-        
         // Update on main queue
-        DispatchQueue.main.async { [weak self] in
-            self?.spectrumAnalysis = spectrumBands
-            self?.waveformAnalysis = Array(monoData.prefix(512))
+        Task { @MainActor in
+            // Bin frequencies into 64 bands for visualization
+            let spectrumBands = self.binFrequenciesToBands(magnitudes)
+            self.spectrumAnalysis = spectrumBands
+            self.waveformAnalysis = Array(monoData.prefix(512))
         }
     }
     
@@ -291,7 +291,7 @@ public final class ModernAudioEngine: NSObject, ObservableObject {
         return bands
     }
     
-    private func calculateVULevels(_ buffer: AVAudioPCMBuffer) {
+    nonisolated private func calculateVULevels(_ buffer: AVAudioPCMBuffer) {
         guard let channelData = buffer.floatChannelData else { return }
         
         let frameCount = Int(buffer.frameLength)

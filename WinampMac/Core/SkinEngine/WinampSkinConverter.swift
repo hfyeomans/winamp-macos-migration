@@ -18,6 +18,7 @@ import Accelerate
 /// Comprehensive converter for Windows Winamp skins to macOS format
 /// Handles coordinate system differences, color space conversion, and Metal optimization
 @available(macOS 15.0, *)
+@MainActor
 public final class WinampSkinConverter: ObservableObject {
     
     // MARK: - Logger
@@ -531,7 +532,7 @@ public final class WinampSkinConverter: ObservableObject {
 // MARK: - Data Structures
 
 /// Metal texture atlas for efficient GPU rendering
-public struct MetalTextureAtlas {
+public struct MetalTextureAtlas: @unchecked Sendable {
     public let name: String
     public let texture: MTLTexture
     public let uvMappings: [String: UVMapping]
@@ -546,7 +547,7 @@ public struct MetalTextureAtlas {
 }
 
 /// UV texture coordinates for atlas mapping
-public struct UVMapping {
+public struct UVMapping: Sendable {
     public let minU: CGFloat
     public let minV: CGFloat
     public let maxU: CGFloat
@@ -564,7 +565,7 @@ public struct UVMapping {
 }
 
 /// macOS-optimized skin representation
-public struct MacOSSkin: Sendable {
+public struct MacOSSkin: @unchecked Sendable {
     public let id: String
     public let name: String
     public let originalSkin: WinampSkin

@@ -28,6 +28,10 @@ let package = Package(
             targets: ["WinampMacApp"]
         ),
         .executable(
+            name: "WinampDemoApp",
+            targets: ["WinampDemoApp"]
+        ),
+        .executable(
             name: "WinampSkinConversionCLI",
             targets: ["WinampSkinConversionCLI"]
         ),
@@ -62,6 +66,7 @@ let package = Package(
             name: "WinampPerformance",
             dependencies: ["WinampCore", "WinampRendering"],
             path: "WinampMac/Performance",
+            exclude: ["README.md"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
@@ -77,7 +82,19 @@ let package = Package(
         .executableTarget(
             name: "WinampMacApp",
             dependencies: ["WinampCore", "WinampUI", "WinampRendering", "WinampPerformance"],
+            path: "WinampMac/MainApp",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .executableTarget(
+            name: "WinampDemoApp",
+            dependencies: ["WinampCore", "WinampUI", "WinampRendering", "WinampPerformance"],
             path: "WinampMac/App",
+            exclude: [
+                "Info.plist",
+                "WinampMac.entitlements"
+            ],
             resources: [
                 .process("Resources")
             ],

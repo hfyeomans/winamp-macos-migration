@@ -16,6 +16,7 @@ import Observation
 
 /// Modern macOS optimizations and future-proofing
 @available(macOS 15.0, *)
+@MainActor
 public final class MacOSOptimizations: ObservableObject {
     
     // MARK: - Logger with Enhanced Categories
@@ -23,7 +24,7 @@ public final class MacOSOptimizations: ObservableObject {
     private static let performanceLogger = Logger(subsystem: "com.winamp.mac.performance", category: "Metrics")
     
     // MARK: - Singleton
-    public static let shared = MacOSOptimizations()
+    @MainActor public static let shared = MacOSOptimizations()
     
     // MARK: - System Capabilities Detection
     @Published public private(set) var systemCapabilities = SystemCapabilities()
@@ -170,7 +171,7 @@ public final class MacOSOptimizations: ObservableObject {
         let machineMirror = Mirror(reflecting: systemInfo.machine)
         let machine = machineMirror.children.reduce("") { identifier, element in
             guard let value = element.value as? Int8, value != 0 else { return identifier }
-            return identifier + String(UnicodeScalar(UInt8(value))!)
+            return identifier + String(UnicodeScalar(UInt8(value)) ?? UnicodeScalar(0)!)
         }
         
         return machine.contains("arm64") || machine.hasPrefix("arm")
@@ -188,7 +189,7 @@ public final class MacOSOptimizations: ObservableObject {
             if sysctlbyname(key, nil, &size, nil, 0) == 0 {
                 var value = [Int8](repeating: 0, count: size)
                 if sysctlbyname(key, &value, &size, nil, 0) == 0 {
-                    let string = String(decoding: value, as: UTF8.self)
+                    let string = String(cString: value)
                     if string.lowercased().contains("hypervisor") {
                         return true
                     }
@@ -284,10 +285,13 @@ public final class MacOSOptimizations: ObservableObject {
     
     // MARK: - Performance Monitoring
     private func setupPerformanceMonitoring() {
+        // MetricKit integration disabled for compatibility
+        /*
         guard #available(macOS 12.0, *) else { return }
         
         metricSubscriber = MXMetricManager.shared
         metricSubscriber?.add(self)
+        */
         
         // Start performance monitoring
         Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
@@ -569,9 +573,13 @@ public final class MacOSOptimizations: ObservableObject {
 }
 
 // MARK: - MXMetricManagerSubscriber
+// MARK: - MXMetricManagerSubscriber Support (disabled for compatibility)
+/*
 @available(macOS 15.0, *)
 extension MacOSOptimizations: MXMetricManagerSubscriber {
     
+    // MARK: - MetricKit Support (disabled due to platform compatibility)
+    /*
     @available(macOS 12.0, *)
     public func didReceive(_ payloads: [MXMetricPayload]) {
         for payload in payloads {
@@ -591,7 +599,9 @@ extension MacOSOptimizations: MXMetricManagerSubscriber {
             }
         }
     }
+    */
 }
+*/
 
 // MARK: - Notification Names
 extension Notification.Name {

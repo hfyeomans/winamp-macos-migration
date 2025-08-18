@@ -11,6 +11,8 @@ import AppKit
 import Combine
 import OSLog
 import SwiftUI
+import AVFoundation
+import MetalKit
 
 /// Future-proofing architecture for macOS evolution
 @available(macOS 15.0, *)
@@ -20,10 +22,10 @@ public final class FutureProofing: ObservableObject {
     private static let logger = Logger(subsystem: "com.winamp.mac.future", category: "Compatibility")
     
     // MARK: - Singleton
-    public static let shared = FutureProofing()
+    @MainActor public static let shared = FutureProofing()
     
     // MARK: - Version Detection
-    @Published public private(set) var systemVersion = SystemVersion()
+    @Published public private(set) var systemVersion = SystemVersion.detect()
     
     public struct SystemVersion {
         public let major: Int
@@ -38,6 +40,17 @@ public final class FutureProofing: ObservableObject {
         
         public var versionString: String {
             return "\(major).\(minor).\(patch)"
+        }
+        
+        static func detect() -> SystemVersion {
+            let version = ProcessInfo.processInfo.operatingSystemVersion
+            return SystemVersion(
+                major: version.majorVersion,
+                minor: version.minorVersion,
+                patch: version.patchVersion,
+                buildNumber: "Unknown",
+                codename: "macOS"
+            )
         }
     }
     
@@ -79,7 +92,7 @@ public final class FutureProofing: ObservableObject {
     }
     
     // MARK: - API Adapters
-    private var apiAdapters: [String: APIAdapter] = [:]
+    private var apiAdapters: [String: any APIAdapter] = [:]
     
     public protocol APIAdapter {
         associatedtype ModernAPI
@@ -318,7 +331,7 @@ public final class FutureProofing: ObservableObject {
     }
     
     private func registerAdapter<T: APIAdapter>(_ name: String, _ adapter: T) {
-        apiAdapters[name] = adapter as? any APIAdapter
+        apiAdapters[name] = adapter
     }
     
     // MARK: - Adaptive Configuration

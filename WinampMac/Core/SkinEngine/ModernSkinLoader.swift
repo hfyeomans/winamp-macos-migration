@@ -44,9 +44,9 @@ public final class ModernSkinLoader: @unchecked Sendable {
         imageCache.countLimit = maxCacheItems * 10    // More images than skins
         imageCache.name = "WinampSkinImageCache"
         
-        // Memory pressure handling
+        // Memory pressure handling - use a custom notification since macOS doesn't have memory warnings
         NotificationCenter.default.addObserver(
-            forName: NSApplication.didReceiveMemoryWarningNotification,
+            forName: NSNotification.Name("MemoryPressure"),
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -61,13 +61,22 @@ public final class ModernSkinLoader: @unchecked Sendable {
     }
     
     // MARK: - Modern Skin Assets Structure
-    public struct SkinAssets: Sendable {
+    public final class SkinAssets: @unchecked Sendable {
         public let metadata: SkinMetadata
         public let sprites: [String: NSImage]
         public let configuration: SkinConfiguration
         public let cursors: [String: Data]
         public let colorScheme: ColorScheme
         public let customRegions: [String: WindowRegion]
+        
+        public init(metadata: SkinMetadata, sprites: [String: NSImage], configuration: SkinConfiguration, cursors: [String: Data], colorScheme: ColorScheme, customRegions: [String: WindowRegion]) {
+            self.metadata = metadata
+            self.sprites = sprites
+            self.configuration = configuration
+            self.cursors = cursors
+            self.colorScheme = colorScheme
+            self.customRegions = customRegions
+        }
         
         // Estimated memory footprint for caching
         public var estimatedSize: Int {
@@ -105,7 +114,7 @@ public final class ModernSkinLoader: @unchecked Sendable {
         public let visualizationSettings: VisualizationSettings
     }
     
-    public struct WindowRegion: Sendable {
+    public struct WindowRegion: @unchecked Sendable {
         public let frame: CGRect
         public let hitTestPath: NSBezierPath?
         public let isTransparent: Bool
@@ -119,7 +128,7 @@ public final class ModernSkinLoader: @unchecked Sendable {
         }
     }
     
-    public struct ButtonMapping: Sendable {
+    public struct ButtonMapping: @unchecked Sendable {
         public let normalFrame: CGRect
         public let pressedFrame: CGRect?
         public let disabledFrame: CGRect?
@@ -149,7 +158,7 @@ public final class ModernSkinLoader: @unchecked Sendable {
         }
     }
     
-    public struct TextRegion: Sendable {
+    public struct TextRegion: @unchecked Sendable {
         public let frame: CGRect
         public let font: NSFont
         public let color: NSColor

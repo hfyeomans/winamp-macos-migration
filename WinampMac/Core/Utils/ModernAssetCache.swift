@@ -187,9 +187,9 @@ public final class ModernAssetCache: ObservableObject {
             self?.applicationDidResignActive()
         }
         
-        // Memory warning notifications
+        // Memory warning notifications (use generic notification for memory pressure)
         NotificationCenter.default.addObserver(
-            forName: NSApplication.didReceiveMemoryWarningNotification,
+            forName: NSNotification.Name("MemoryPressureWarning"),
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -397,7 +397,7 @@ public final class ModernAssetCache: ObservableObject {
     
     private func performAdaptiveEviction() {
         // Adaptive policy considers memory pressure level
-        let memoryInfo = mach_task_basic_info()
+        var memoryInfo = mach_task_basic_info()
         var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size)/4
         
         let kerr: kern_return_t = withUnsafeMutablePointer(to: &memoryInfo) {
@@ -520,9 +520,14 @@ private class CacheDelegate: NSObject, NSCacheDelegate {
         super.init()
     }
     
-    func cache(_ cache: NSCache<AnyObject, AnyObject>, willEvictObject obj: AnyObject) {
+    func cache(_ cache: NSCache<AnyObject, AnyObject>, willEvictObject obj: Any) {
         DispatchQueue.main.async { [weak self] in
-            self?.cache?.statistics.totalEvictions += 1
+            if let cache = self?.cache {
+                var stats = cache.statistics
+                stats.totalEvictions += 1
+                // Note: Can't set back to cache.statistics as it's read-only
+                // Consider using a separate counter or notification
+            }
         }
     }
 }

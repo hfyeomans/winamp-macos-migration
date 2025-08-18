@@ -130,7 +130,7 @@ public actor AsyncSkinLoader {
         }
     }
     
-    private func extractZipArchive(data: Data) throws -> [String: Data] {
+    nonisolated private func extractZipArchive(data: Data) throws -> [String: Data] {
         var extractedFiles: [String: Data] = [:]
         
         // Use native Compression framework for .wsz (ZIP) extraction
@@ -220,7 +220,7 @@ public actor AsyncSkinLoader {
         }
     }
     
-    private func parseConfigurationFiles(_ files: [String: Data]) throws -> SkinConfiguration {
+    nonisolated private func parseConfigurationFiles(_ files: [String: Data]) throws -> SkinConfiguration {
         var config = SkinConfiguration()
         
         // Parse region.txt for window shapes
@@ -425,7 +425,7 @@ public actor AsyncSkinLoader {
         }
     }
     
-    private func processResourceFiles(_ files: [String: Data], config: SkinConfiguration) throws -> SkinResources {
+    nonisolated private func processResourceFiles(_ files: [String: Data], config: SkinConfiguration) throws -> SkinResources {
         var resources = SkinResources()
         
         // Process bitmap files
@@ -481,13 +481,7 @@ private extension Data {
 }
 
 // MARK: - Cache Manager
-@globalActor
-public actor SkinCacheActor {
-    public static let shared = SkinCacheActor()
-}
-
-@SkinCacheActor
-public final class SkinCacheManager {
+public final class SkinCacheManager: @unchecked Sendable {
     private let cache = NSCache<NSString, CachedSkin>()
     private let maxCacheSize: Int = 100_000_000 // 100MB
     
@@ -577,6 +571,6 @@ public struct SkinResources: Sendable {
 }
 
 // MARK: - NSColor Sendable Conformance
-extension NSColor: @unchecked Sendable {}
-extension NSImage: @unchecked Sendable {}
-extension NSCursor: @unchecked Sendable {}
+extension NSColor: @retroactive @unchecked Sendable {}
+extension NSImage: @retroactive @unchecked Sendable {}
+extension NSCursor: @retroactive @unchecked Sendable {}

@@ -13,6 +13,7 @@ import AppKit
 
 /// Comprehensive error handling system for Winamp macOS
 @available(macOS 15.0, *)
+@MainActor
 public final class ModernErrorHandling {
     
     // MARK: - Centralized Logger
@@ -224,12 +225,12 @@ public final class ModernErrorHandling {
     
     // MARK: - Error Handler Protocol
     public protocol ErrorHandler {
-        func handle(_ error: WinampError, context: ErrorContext) async
-        func canHandle(_ error: WinampError) -> Bool
+        func handle(_ error: ModernErrorHandling.WinampError, context: ModernErrorHandling.ErrorContext) async
+        func canHandle(_ error: ModernErrorHandling.WinampError) -> Bool
     }
     
     // MARK: - Error Manager
-    public static let shared = ModernErrorHandling()
+    @MainActor public static let shared = ModernErrorHandling()
     
     private var errorHandlers: [ErrorHandler] = []
     private var errorHistory: [ErrorReport] = []
@@ -272,7 +273,7 @@ public final class ModernErrorHandling {
     
     // MARK: - Public Interface
     public func registerHandler(_ handler: ErrorHandler) {
-        errorQueue.async {
+        Task { @MainActor in
             self.errorHandlers.append(handler)
         }
     }
@@ -280,7 +281,7 @@ public final class ModernErrorHandling {
     public func reportError(_ error: WinampError, context: ErrorContext, severity: ErrorReport.Severity = .medium) async {
         let report = ErrorReport(error: error, context: context, severity: severity)
         
-        await errorQueue.async {
+        Task { @MainActor in
             self.errorHistory.append(report)
             
             // Keep history manageable
@@ -316,7 +317,7 @@ public final class ModernErrorHandling {
     }
     
     public func clearErrorHistory() {
-        errorQueue.async {
+        Task { @MainActor in
             self.errorHistory.removeAll()
         }
     }
@@ -343,7 +344,7 @@ public extension ModernErrorHandling {
         } catch {
             let winampError = WinampError.systemCallFailed(
                 function: operation,
-                errno: (error as NSError).code
+                errno: Int32((error as NSError).code)
             )
             await shared.reportError(winampError, context: context)
             return .failure(winampError)
@@ -351,10 +352,10 @@ public extension ModernErrorHandling {
     }
     
     /// Safely execute an async operation
-    static func safeExecuteAsync<T>(
+    static func safeExecuteAsync<T: Sendable>(
         operation: String,
         userInfo: [String: Any] = [:],
-        block: () async throws -> T
+        block: @Sendable () async throws -> T
     ) async -> WinampResult<T> {
         let context = ErrorContext(operation: operation, userInfo: userInfo)
         
@@ -367,7 +368,7 @@ public extension ModernErrorHandling {
         } catch {
             let winampError = WinampError.systemCallFailed(
                 function: operation,
-                errno: (error as NSError).code
+                errno: Int32((error as NSError).code)
             )
             await shared.reportError(winampError, context: context)
             return .failure(winampError)
@@ -391,19 +392,19 @@ public extension ModernErrorHandling {
 
 // MARK: - Default Error Handlers
 @available(macOS 15.0, *)
-private struct LoggingErrorHandler: ErrorHandler {
-    func handle(_ error: WinampError, context: ErrorContext) async {
+private struct LoggingErrorHandler: ModernErrorHandling.ErrorHandler {
+    func handle(_ error: ModernErrorHandling.WinampError, context: ModernErrorHandling.ErrorContext) async {
         ModernErrorHandling.logger.error("Error in \(context.operation): \(error.localizedDescription)")
     }
     
-    func canHandle(_ error: WinampError) -> Bool {
+    func canHandle(_ error: ModernErrorHandling.WinampError) -> Bool {
         return true // Log all errors
     }
 }
 
 @available(macOS 15.0, *)
-private struct UserNotificationErrorHandler: ErrorHandler {
-    func handle(_ error: WinampError, context: ErrorContext) async {
+private struct UserNotificationErrorHandler: ModernErrorHandling.ErrorHandler {
+    func handle(_ error: ModernErrorHandling.WinampError, context: ModernErrorHandling.ErrorContext) async {
         // Only show user notifications for medium+ severity errors
         await MainActor.run {
             let alert = NSAlert()
@@ -420,7 +421,7 @@ private struct UserNotificationErrorHandler: ErrorHandler {
         }
     }
     
-    func canHandle(_ error: WinampError) -> Bool {
+    func canHandle(_ error: ModernErrorHandling.WinampError) -> Bool {
         // Show alerts for user-facing errors
         switch error {
         case .skinNotFound, .skinCorrupted, .skinIncompatible,
@@ -434,8 +435,8 @@ private struct UserNotificationErrorHandler: ErrorHandler {
 }
 
 @available(macOS 15.0, *)
-private struct RecoveryErrorHandler: ErrorHandler {
-    func handle(_ error: WinampError, context: ErrorContext) async {
+private struct RecoveryErrorHandler: ModernErrorHandling.ErrorHandler {
+    func handle(_ error: ModernErrorHandling.WinampError, context: ModernErrorHandling.ErrorContext) async {
         // Attempt automatic recovery for certain errors
         switch error {
         case .memoryPressureCritical:
@@ -455,7 +456,7 @@ private struct RecoveryErrorHandler: ErrorHandler {
         }
     }
     
-    func canHandle(_ error: WinampError) -> Bool {
+    func canHandle(_ error: ModernErrorHandling.WinampError) -> Bool {
         switch error {
         case .memoryPressureCritical, .audioInitializationFailed, .skinCorrupted:
             return true

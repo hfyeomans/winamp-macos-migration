@@ -1,7 +1,11 @@
 import SwiftUI
 import AppKit
-import AVFoundation
 import UniformTypeIdentifiers
+import Metal
+import Darwin.Mach
+#if canImport(AVFAudio)
+import AVFAudio
+#endif
 
 /// WinampMac Demo App - Complete SwiftUI application showcasing Winamp to macOS migration
 /// Features real .wsz skin loading, Metal rendering, comprehensive visualizations, and native macOS experience
@@ -84,13 +88,15 @@ struct WinampDemoApp: App {
             print("Metal device available: \(device.name)")
         }
         
-        // Setup audio session
+        // Setup audio session (not available on macOS)
+        #if canImport(AVFAudio) && !os(macOS)
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
             print("Failed to setup audio session: \(error)")
         }
+        #endif
         
         // Configure app for better performance
         NSApplication.shared.appearance = NSAppearance(named: .aqua)

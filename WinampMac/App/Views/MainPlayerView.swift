@@ -2,6 +2,7 @@ import SwiftUI
 import MetalKit
 import AVFoundation
 import AppKit
+import UniformTypeIdentifiers
 
 /// Main Player View - The core Winamp player interface with Metal-rendered skins
 /// Supports full Winamp functionality including skin display, controls, and shade mode

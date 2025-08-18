@@ -35,9 +35,11 @@ public final class AppleSiliconOptimizer: ObservableObject {
     }
     
     deinit {
-        Task { @MainActor in
-            await cleanup()
+        // Synchronous cleanup in deinit to avoid capturing self
+        if let observer = thermalStateObserver {
+            NotificationCenter.default.removeObserver(observer)
         }
+        memoryPressureSource?.cancel()
     }
     
     // MARK: - System Detection
@@ -391,7 +393,7 @@ public final class AppleSiliconOptimizer: ObservableObject {
         // Enable NEON optimizations automatically on Apple Silicon
         
         // Set up optimized FFT configurations
-        let fftRadix = vDSP_Radix.radix2
+        let fftRadix = FFTRadix(kFFTRadix2)
         // This would be used in the audio engine for spectrum analysis
     }
     
@@ -448,12 +450,15 @@ public final class AppleSiliconOptimizer: ObservableObject {
     }
     
     // MARK: - Cleanup
-    private func cleanup() async {
+    @MainActor
+    public func performCleanup() async {
         if let observer = thermalStateObserver {
             NotificationCenter.default.removeObserver(observer)
+            thermalStateObserver = nil
         }
         
         memoryPressureSource?.cancel()
+        memoryPressureSource = nil
     }
 }
 
@@ -466,7 +471,7 @@ public struct PerformanceMetrics: Sendable {
     public let thermalState: ProcessInfo.ThermalState
     
     public var isPerformingWell: Bool {
-        return efficiency > 0.8 && thermalState <= .fair
+        return efficiency > 0.8 && thermalState.rawValue <= ProcessInfo.ThermalState.fair.rawValue
     }
 }
 
@@ -494,22 +499,27 @@ public final class AccelerateOptimizer: @unchecked Sendable {
         
         var realp = [Float](repeating: 0, count: count / 2)
         var imagp = [Float](repeating: 0, count: count / 2)
-        var splitComplex = DSPSplitComplex(realp: &realp, imagp: &imagp)
         
-        input.withUnsafeBufferPointer { inputPtr in
-            vDSP_ctoz(inputPtr.baseAddress!.withMemoryRebound(to: DSPComplex.self, capacity: count / 2) { $0 },
-                     2, &splitComplex, 1, vDSP_Length(count / 2))
+        realp.withUnsafeMutableBufferPointer { realPtr in
+            imagp.withUnsafeMutableBufferPointer { imagPtr in
+                var splitComplex = DSPSplitComplex(realp: realPtr.baseAddress!, imagp: imagPtr.baseAddress!)
+                
+                input.withUnsafeBufferPointer { inputPtr in
+                    vDSP_ctoz(inputPtr.baseAddress!.withMemoryRebound(to: DSPComplex.self, capacity: count / 2) { $0 },
+                             2, &splitComplex, 1, vDSP_Length(count / 2))
+                }
+                
+                vDSP_fft_zrip(fftSetup, &splitComplex, 1, log2n, FFTDirection(FFT_FORWARD))
+                
+                // Scale the output
+                var scale = Float(1.0 / Float(count))
+                vDSP_vsmul(splitComplex.realp, 1, &scale, splitComplex.realp, 1, vDSP_Length(count / 2))
+                vDSP_vsmul(splitComplex.imagp, 1, &scale, splitComplex.imagp, 1, vDSP_Length(count / 2))
+            }
         }
         
-        vDSP_fft_zrip(fftSetup, &splitComplex, 1, log2n, FFTDirection(FFT_FORWARD))
-        
-        // Scale the output
-        var scale = Float(1.0 / Float(count))
-        vDSP_vsmul(splitComplex.realp, 1, &scale, splitComplex.realp, 1, vDSP_Length(count / 2))
-        vDSP_vsmul(splitComplex.imagp, 1, &scale, splitComplex.imagp, 1, vDSP_Length(count / 2))
-        
-        outputReal = Array(UnsafeBufferPointer(start: splitComplex.realp, count: count / 2))
-        outputImaginary = Array(UnsafeBufferPointer(start: splitComplex.imagp, count: count / 2))
+        outputReal = realp
+        outputImaginary = imagp
     }
     
     // MARK: - Optimized Vector Operations
