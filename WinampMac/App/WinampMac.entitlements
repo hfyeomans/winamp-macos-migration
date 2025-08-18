@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- App Sandbox -->
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	
+	<!-- Network Access -->
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.network.server</key>
+	<false/>
+	
+	<!-- File System Access -->
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+	<key>com.apple.security.files.downloads.read-write</key>
+	<true/>
+	<key>com.apple.security.files.bookmarks.app-scope</key>
+	<true/>
+	
+	<!-- Media Library Access -->
+	<key>com.apple.security.media-library</key>
+	<true/>
+	<key>com.apple.security.music-library</key>
+	<true/>
+	
+	<!-- Audio/Video Recording -->
+	<key>com.apple.security.device.audio-input</key>
+	<true/>
+	<key>com.apple.security.device.camera</key>
+	<true/>
+	
+	<!-- Hardware Access -->
+	<key>com.apple.security.device.usb</key>
+	<true/>
+	
+	<!-- iCloud -->
+	<key>com.apple.security.ubiquity-kvstore</key>
+	<true/>
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.com.winamp.mac</string>
+	</array>
+	<key>com.apple.developer.ubiquity-kvstore-identifier</key>
+	<string>com.winamp.mac</string>
+	
+	<!-- CloudKit -->
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudKit</string>
+		<string>CloudDocuments</string>
+	</array>
+	
+	<!-- App Groups -->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.winamp.mac</string>
+	</array>
+	
+	<!-- Keychain Sharing -->
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.winamp.mac</string>
+	</array>
+	
+	<!-- URL Schemes -->
+	<key>com.apple.security.exception.shared-preference.read-write</key>
+	<array>
+		<string>com.winamp.mac.preferences</string>
+	</array>
+	
+	<!-- Printing -->
+	<key>com.apple.security.print</key>
+	<true/>
+	
+	<!-- Screen Recording (for visualization recording) -->
+	<key>com.apple.security.temporary-exception.screen-recording</key>
+	<true/>
+	
+	<!-- JIT Compilation for advanced audio processing -->
+	<key>com.apple.security.cs.allow-jit</key>
+	<false/>
+	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+	<false/>
+	<key>com.apple.security.cs.allow-dyld-environment-variables</key>
+	<false/>
+	
+	<!-- Metal Performance Shaders -->
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<false/>
+	
+	<!-- Automation (for AppleScript support) -->
+	<key>com.apple.security.automation.apple-events</key>
+	<true/>
+	
+	<!-- System Services -->
+	<key>com.apple.security.temporary-exception.shared-preference.read-only</key>
+	<array>
+		<string>com.apple.systempreferences</string>
+	</array>
+	
+	<!-- Hardened Runtime Exceptions -->
+	<key>com.apple.security.cs.disable-executable-page-protection</key>
+	<false/>
+	
+	<!-- Audio Unit Extensions -->
+	<key>com.apple.security.temporary-exception.audio-unit-host</key>
+	<true/>
+	
+	<!-- System Extensions (for audio drivers) -->
+	<key>com.apple.security.system-extension.install</key>
+	<false/>
+	
+	<!-- Code Signing -->
+	<key>com.apple.security.get-task-allow</key>
+	<false/>
+	
+	<!-- Maps (not used but may be needed for location-based features) -->
+	<key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
+	<array>
+		<string>com.apple.audio.AudioDriverHost</string>
+		<string>com.apple.audio.coreaudiod</string>
+	</array>
+	
+	<!-- External I/O (for professional audio interfaces) -->
+	<key>com.apple.security.device.serial</key>
+	<false/>
+	<key>com.apple.security.device.bluetooth</key>
+	<false/>
+	
+	<!-- Pasteboard -->
+	<key>com.apple.security.automation.pasteboard</key>
+	<true/>
+	
+	<!-- Address Book (for sharing features) -->
+	<key>com.apple.security.personal-information.addressbook</key>
+	<false/>
+	
+	<!-- Calendar (for event integration) -->
+	<key>com.apple.security.personal-information.calendars</key>
+	<false/>
+	
+	<!-- Location Services (for geo-tagged playlists) -->
+	<key>com.apple.security.personal-information.location</key>
+	<false/>
+	
+	<!-- Photos (for album artwork) -->
+	<key>com.apple.security.personal-information.photos-library</key>
+	<false/>
+	
+	<!-- Contacts (for sharing) -->
+	<key>com.apple.security.personal-information.contacts</key>
+	<false/>
+	
+	<!-- System Preferences (for audio device configuration) -->
+	<key>com.apple.security.temporary-exception.shared-preference.read-write</key>
+	<array>
+		<string>com.apple.audio.preferences</string>
+	</array>
+	
+	<!-- Developer Tools (for debugging builds only) -->
+	<!-- These should be removed for App Store submission -->
+	<!--
+	<key>com.apple.security.get-task-allow</key>
+	<true/>
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+	<key>com.apple.security.cs.debugger</key>
+	<true/>
+	-->
+</dict>
+</plist>

@@ -19,6 +19,10 @@ let package = Package(
             name: "WinampRendering",
             targets: ["WinampRendering"]
         ),
+        .library(
+            name: "WinampPerformance",
+            targets: ["WinampPerformance"]
+        ),
         .executable(
             name: "WinampMacApp",
             targets: ["WinampMacApp"]
@@ -55,8 +59,16 @@ let package = Package(
             ]
         ),
         .target(
-            name: "WinampUI",
+            name: "WinampPerformance",
             dependencies: ["WinampCore", "WinampRendering"],
+            path: "WinampMac/Performance",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .target(
+            name: "WinampUI",
+            dependencies: ["WinampCore", "WinampRendering", "WinampPerformance"],
             path: "WinampMac/UI",
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
@@ -64,8 +76,11 @@ let package = Package(
         ),
         .executableTarget(
             name: "WinampMacApp",
-            dependencies: ["WinampCore", "WinampUI", "WinampRendering"],
+            dependencies: ["WinampCore", "WinampUI", "WinampRendering", "WinampPerformance"],
             path: "WinampMac/App",
+            resources: [
+                .process("Resources")
+            ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
@@ -90,6 +105,14 @@ let package = Package(
             name: "WinampUITests",
             dependencies: ["WinampUI", "WinampCore"],
             path: "WinampMac/Tests/UI",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .testTarget(
+            name: "WinampPerformanceTests",
+            dependencies: ["WinampPerformance", "WinampCore", "WinampRendering"],
+            path: "WinampMac/Tests/Performance",
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]

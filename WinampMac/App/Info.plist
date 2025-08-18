@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Bundle Information -->
+	<key>CFBundleName</key>
+	<string>WinampMac</string>
+	<key>CFBundleDisplayName</key>
+	<string>WinampMac</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.winamp.mac</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>WAMP</string>
+	<key>CFBundleExecutable</key>
+	<string>WinampMacApp</string>
+	
+	<!-- App Category -->
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.music</string>
+	
+	<!-- Minimum System Version -->
+	<key>LSMinimumSystemVersion</key>
+	<string>15.0</string>
+	
+	<!-- App Description -->
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2024 Winamp. All rights reserved.</string>
+	<key>CFBundleGetInfoString</key>
+	<string>WinampMac - Modern Winamp for macOS with native skin support and advanced visualizations.</string>
+	
+	<!-- Document Types - Skin Files -->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Winamp Skin</string>
+			<key>CFBundleTypeDescription</key>
+			<string>Winamp Skin Package</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>skin-icon</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.winamp.skin</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Audio File</string>
+			<key>CFBundleTypeDescription</key>
+			<string>Audio Files</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>audio-icon</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.mp3</string>
+				<string>public.aac-audio</string>
+				<string>org.xiph.flac</string>
+				<string>com.microsoft.waveform-audio</string>
+				<string>public.aiff-audio</string>
+				<string>com.apple.m4a-audio</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- Exported UTIs -->
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.winamp.skin</string>
+			<key>UTTypeDescription</key>
+			<string>Winamp Skin Package</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.zip-archive</string>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>wsz</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>application/x-winamp-skin</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	
+	<!-- URL Schemes -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Winamp Protocol</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>winamp</string>
+			</array>
+			<key>CFBundleURLIconFile</key>
+			<string>AppIcon</string>
+		</dict>
+	</array>
+	
+	<!-- App Transport Security -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>winamp.com</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSExceptionMinimumTLSVersion</key>
+				<string>TLSv1.2</string>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+	
+	<!-- Privacy Permissions -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>WinampMac can visualize audio from your microphone for enhanced visual effects.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>WinampMac can capture video recordings of visualizations with camera input overlay.</string>
+	<key>NSMediaLibraryUsageDescription</key>
+	<string>WinampMac accesses your music library to play and organize your audio files.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>WinampMac can integrate with your Apple Music library for seamless playback.</string>
+	<key>NSSystemAdministrationUsageDescription</key>
+	<string>WinampMac may require administrator privileges to install audio drivers or system extensions.</string>
+	
+	<!-- Background Modes -->
+	<key>LSBackgroundOnly</key>
+	<false/>
+	<key>LSUIElement</key>
+	<false/>
+	
+	<!-- App Icon -->
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
+	
+	<!-- High Resolution Capable -->
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
+	<true/>
+	
+	<!-- Requires Full Disk Access for some features -->
+	<key>NSSystemExtensionUsageDescription</key>
+	<string>WinampMac may install system extensions for advanced audio processing.</string>
+	
+	<!-- Metal Support -->
+	<key>NSRequiresAquaSystemAppearance</key>
+	<false/>
+	
+	<!-- Principal Class -->
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	
+	<!-- Main Storyboard (not used in SwiftUI) -->
+	<key>NSMainStoryboardFile</key>
+	<string></string>
+	
+	<!-- Services -->
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Play in WinampMac</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>playAudioFile</string>
+			<key>NSPortName</key>
+			<string>WinampMac</string>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSFilenamesPboardType</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- Quick Look Support -->
+	<key>QLSupportedContentTypes</key>
+	<array>
+		<string>com.winamp.skin</string>
+	</array>
+	
+	<!-- Spotlight Metadata -->
+	<key>MDItemKeywords</key>
+	<array>
+		<string>Winamp</string>
+		<string>Music</string>
+		<string>Audio</string>
+		<string>Player</string>
+		<string>Visualization</string>
+		<string>Skin</string>
+		<string>Media</string>
+	</array>
+	
+	<!-- App Store Information -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	
+	<!-- Hardware Requirements -->
+	<key>LSRequiresIPhoneOS</key>
+	<false/>
+	<key>LSRequiresNativeExecution</key>
+	<true/>
+	
+	<!-- Window Management -->
+	<key>NSSupportsWindowRestoration</key>
+	<true/>
+	<key>NSDocumentRevisionsDebugMode</key>
+	<false/>
+	
+	<!-- Accessibility -->
+	<key>NSAccessibilityDescription</key>
+	<string>WinampMac is a modern audio player with visualization support and customizable skins.</string>
+	
+	<!-- Launch Services -->
+	<key>LSMultipleInstancesProhibited</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>itms-apps</string>
+		<string>macappstore</string>
+	</array>
+	
+	<!-- Beta/Development flags -->
+	<key>WinampDebugMode</key>
+	<false/>
+	<key>WinampBetaFeatures</key>
+	<false/>
+	
+	<!-- Version Information -->
+	<key>WinampBuildDate</key>
+	<string>2024-08-17</string>
+	<key>WinampGitCommit</key>
+	<string>main</string>
+	
+	<!-- Feature Flags -->
+	<key>WinampFeatures</key>
+	<dict>
+		<key>MetalRendering</key>
+		<true/>
+		<key>CloudSync</key>
+		<true/>
+		<key>AdvancedVisualizations</key>
+		<true/>
+		<key>SkinEditor</key>
+		<false/>
+		<key>PluginSupport</key>
+		<false/>
+	</dict>
+</dict>
+</plist>
