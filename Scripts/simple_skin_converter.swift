@@ -9,14 +9,15 @@ import AppKit
 print("🎵 Simple Winamp Skin Converter")
 print("===============================")
 
-// Find .wsz files in current directory
+// Find .wsz files in Samples/Skins directory
 let fileManager = FileManager.default
 let currentDir = fileManager.currentDirectoryPath
-let contents = try fileManager.contentsOfDirectory(atPath: currentDir)
+let skinsDir = currentDir + "/Samples/Skins"
+let contents = try fileManager.contentsOfDirectory(atPath: skinsDir)
 let wszFiles = contents.filter { $0.hasSuffix(".wsz") }
 
 guard !wszFiles.isEmpty else {
-    print("❌ No .wsz files found in current directory")
+    print("❌ No .wsz files found in Samples/Skins directory")
     exit(1)
 }
 
@@ -35,7 +36,8 @@ try fileManager.createDirectory(atPath: tempDir, withIntermediateDirectories: tr
 
 let unzipProcess = Process()
 unzipProcess.launchPath = "/usr/bin/unzip"
-unzipProcess.arguments = ["-q", "-o", skinFile, "-d", tempDir]
+let fullSkinPath = skinsDir + "/" + skinFile
+unzipProcess.arguments = ["-q", "-o", fullSkinPath, "-d", tempDir]
 unzipProcess.launch()
 unzipProcess.waitUntilExit()
 

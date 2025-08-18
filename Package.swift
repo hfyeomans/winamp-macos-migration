@@ -7,15 +7,24 @@ let package = Package(
         .macOS(.v15)
     ],
     products: [
+        .library(
+            name: "ModernWinampCore",
+            targets: ["ModernWinampCore"]
+        ),
         .executable(
-            name: "WinampSkinCLI",
-            targets: ["WinampSkinCLI"]
+            name: "ModernWinampCLI",
+            targets: ["ModernWinampCLI"]
         )
     ],
     targets: [
+        .target(
+            name: "ModernWinampCore",
+            path: "Sources/ModernWinampCore"
+        ),
         .executableTarget(
-            name: "WinampSkinCLI",
-            path: "Sources/SimpleCLI"
+            name: "ModernWinampCLI",
+            dependencies: ["ModernWinampCore"],
+            path: "Sources/ModernWinampCLI"
         )
     ]
 )
